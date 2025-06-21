@@ -1,34 +1,33 @@
-name: Daily Commit Update
+name: Daily Commit Workflow
 
 on:
   schedule:
-    # This cron expression schedules the workflow to run once per day at 9:00 AM UTC
-    - cron: '0 9 * * *'
+    - cron: '0 12 * * *' # Runs daily at 12:00 UTC
+  workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
   daily_commit:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
+      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Set up Git configuration for commits
-      - name: Set up Git user
+      # Step 2: Set up Git configuration (username and email)
+      - name: Set Git username and email
         run: |
-          git config --global user.name 'DevSync Automation'
-          git config --global user.email '22f3002631@ds.study.iitm.ac.in'
+          git config --global user.name "DevSync Automation"
+          git config --global user.email "22f3002631@ds.study.iitm.ac.in"
 
-      # Create a commit to update the repository
-      - name: Make daily commit with update
+      # Step 3: Make a change in the repository (e.g., update a README file)
+      - name: Update README or add a status file
         run: |
-          # Create a dummy change or update a specific file, for example, updating a README or status file
-          echo "Daily update: $(date)" >> update_log.txt
-          git add update_log.txt
-          git commit -m "Daily commit update $(date)"
-          git push
-
-      # Ensure the commit is tracked
-      - name: Push changes to the repository
-        run: git push
+          echo "Update performed by DevSync automation at $(date)" >> README.md
+          git add README.md
+          git commit -m "Automated commit by DevSync automation at $(date)"
+          
+      # Step 4: Push the changes back to the repository
+      - name: Push changes
+        run: |
+          git push origin main  # Adjust the branch name as needed (e.g., 'main' or 'master')
