@@ -20,14 +20,14 @@ jobs:
           git config --global user.name "DevSync Automation"
           git config --global user.email "22f3002631@ds.study.iitm.ac.in"
 
-      # Step 3: Make a change in the repository (e.g., update a README file)
-      - name: Update README or add a status file
+      # Step 3: Create a dummy change or update a specific file (e.g., update a status file)
+      - name: Update status or add log file
         run: |
-          echo "Update performed by DevSync automation at $(date)" >> README.md
-          git add README.md
-          git commit -m "Automated commit by DevSync automation at $(date)"
-          
-      # Step 4: Push the changes back to the repository
+          echo "Daily commit update $(date)" > update_log.txt
+          git add update_log.txt
+          git commit -m "Daily commit update $(date)"
+
+      # Step 4: Push changes using the GitHub Token for authentication
       - name: Push changes
         run: |
-          git push origin main  # Adjust the branch name as needed (e.g., 'main' or 'master')
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
