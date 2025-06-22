@@ -1,33 +1,27 @@
-name: Daily Commit Workflow
+name: Daily Commit 
 
 on:
   schedule:
-    - cron: '0 12 * * *' # Runs daily at 12:00 UTC
-  workflow_dispatch: # Allows manual triggering from GitHub UI
+    - cron: '0 6 * * *'  # Runs daily at 06:00 UTC
+  workflow_dispatch:     # Optional: allows manual trigger
 
 jobs:
-  daily_commit:
+  daily-update:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      # Step 2: Set up Git configuration (username and email)
-      - name: Set Git username and email
+      - name: Add timestamp with mail
         run: |
-          git config --global user.name "DevSync Automation"
-          git config --global user.email "22f3002631@ds.study.iitm.ac.in"
+          echo "Last update: $(date -u)" > last_update.txt
 
-      # Step 3: Create a dummy change or update a specific file (e.g., update a status file)
-      - name: Update status or add log file
+      - name: Commit and push changes 22f3002631@ds.study.iitm.ac.in
         run: |
-          echo "Daily commit update $(date)" > update_log.txt
-          git add update_log.txt
-          git commit -m "Daily commit update $(date)"
-
-      # Step 4: Push changes using the GitHub Token for authentication
-      - name: Push changes
-        run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git pull
+          git config user.name "22f3002631"
+          git config user.email "22f3002631@ds.study.iitm.ac.in"
+          git add last_update.txt
+          git commit -m "Daily update at $(date -u)" || echo "No changes to commit"
+          git push
